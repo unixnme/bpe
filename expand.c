@@ -3,8 +3,7 @@
 #include <stdio.h>
 
 /* Decompress data from input to output */
-void expand (FILE *input, FILE *output)
-{
+void expand(FILE *input, FILE *output) {
     unsigned char left[256], right[256], stack[30];
     short int c, count, i, size;
     /* Unpack each block until end of file */
@@ -17,7 +16,8 @@ void expand (FILE *input, FILE *output)
             /* Skip range of literal bytes */
             if (count > 127) {
                 c += count - 127;
-                count = 0; }
+                count = 0;
+            }
             if (c == 256) break;
             /* Read pairs, skip right if literal */
             for (i = 0; i <= count; i++, c++) {
@@ -41,26 +41,28 @@ void expand (FILE *input, FILE *output)
             }
             /* Output byte or push pair on stack */
             if (c == left[c])
-                putc(c,output);
+                putc(c, output);
             else {
                 stack[i++] = right[c];
                 stack[i++] = left[c];
             }
-        } }
+        }
+    }
 
 }
-int main (int argc, char *argv[])
-{
+
+int main(int argc, char *argv[]) {
     FILE *infile, *outfile;
     if (argc != 3)
         printf("Usage: expand infile outfile\n");
-    else if ((infile=fopen(argv[1],"rb"))==NULL)
-        printf("Error opening input %s\n",argv[1]);
-    else if ((outfile=fopen(argv[2],"wb"))==NULL)
-        printf("Error opening output %s\n",argv[2]);
+    else if ((infile = fopen(argv[1], "rb")) == NULL)
+        printf("Error opening input %s\n", argv[1]);
+    else if ((outfile = fopen(argv[2], "wb")) == NULL)
+        printf("Error opening output %s\n", argv[2]);
     else {
-        expand(infile,outfile);
+        expand(infile, outfile);
         fclose(outfile);
         fclose(infile);
-    } }
+    }
+}
 /* End of File */
